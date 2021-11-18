@@ -1,1 +1,42 @@
+<html>
+<head>
+    <h1>Select a Major</h1>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.min.js"></script>
+</head>
+<body>
+  <div class="container">
+      <button type="button" class="btn btn-primary" onclick="GenData('CIT')">Cit Majors</button>
+      <button type="button" class="btn btn-primary" onclick="GenData('BUS')">Business Major</button>
+  </div> 
+</body>
+  <script type="text/x-handlebars-template" id="tableTemplate">
+    <table class="table table-striped">
+        <tr><th>Name</th><th>Major</th><th>Midterm Grade</th><th>Final Grade</th></tr>
+           {{#each rows}}
+              <tr>
+                   <td>{{name}}</td><td>{{major}}</td><td>{{midterm}}</td><td>{{final}}</td>
+              </tr>
+           {{/each}}
+    </table>
+</script>
+<script>
+function GenData(Selected_Major) {
+    var request = new XMLHttpRequest();
+    request.open('GET','cit5students.json')
 
+    request.onload = function(){
+        var data = JSON.parse(request.responseText)
+
+        Scores = data.filter(getMajor)
+        function getMajor(item) {
+            return item.Major == Selected_Major;
+        }
+    }
+}
+var templateText = document.getElementById('tableTemplate').innerHTML;
+var compiledTemplateText = Handlebars.compile(templateText);
+compiledHtml = compiledTemplateText ({rows: Scores})
+document.getElementById('menuTable').innerHTML = compiledHtml
+</script>
+
+</html>
